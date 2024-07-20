@@ -48,8 +48,25 @@ class SudokuSolver {
   checkRowPlacement(puzzleString, row, column, value) {
     // Check if data is correct
     if (checkCorrect(row, column, value)) {
-      // TODO
-      return true;
+      // Check if already placed
+      let substring;
+      switch(row) {
+        case 1: substring = puzzleString.substring(0,9);
+        case 2: substring = puzzleString.substring(9,18);
+        case 3: substring = puzzleString.substring(18,27);
+        case 4: substring = puzzleString.substring(27,36);
+        case 5: substring = puzzleString.substring(36,45);
+        case 6: substring = puzzleString.substring(45,54);
+        case 7: substring = puzzleString.substring(54,63);
+        case 8: substring = puzzleString.substring(63,72);
+        case 9: substring = puzzleString.substring(72,81);
+      };
+
+      if (substring[column] != ".") {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
