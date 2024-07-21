@@ -18,10 +18,24 @@ suite('Unit Tests', () => {
             assert.equal(solver.validate('...9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..'), false);
         });
         test('Logic handles a valid row placement', function() {
-            assert.equal(solver.checkRowPlacement(validSudoku, 'A', '1', '2' ), true);
+            assert.equal(solver.checkRowPlacement(validSudoku, 'A', 1, 2 ), true);
+            assert.equal(solver.checkRowPlacement(validSudoku, 'I', 9, 2 ), true);
+
         });
         test('Logic handles an invalid row placement', function() {
-            assert.equal(solver.checkRowPlacement(validSudoku, 'A', '1', '9' ), false);
+            assert.equal(solver.checkRowPlacement(validSudoku, 'A', 1, 1), false);
+            assert.equal(solver.checkRowPlacement(validSudoku, 'I', 9, 6), false);
+
+        });
+        test('Logic handles a valid column placement', function() {
+            assert.equal(solver.checkColPlacement(validSudoku, 'A', 1, 2 ), true);
+            assert.equal(solver.checkColPlacement(validSudoku, 'I', 9, 5 ), true);
+
+        });
+        test('Logic handles an invalid column placement', function() {
+            assert.equal(solver.checkColPlacement(validSudoku, 'A', 1, 8 ), false);
+            assert.equal(solver.checkColPlacement(validSudoku, 'I', 9, 9 ), false);
+
         });
     })
 });
