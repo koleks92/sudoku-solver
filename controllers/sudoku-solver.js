@@ -29,28 +29,9 @@ function checkCorrect(row, column, value) {
   }
 }
 
-
-
-class SudokuSolver {
-
-  validate(puzzleString) {
-    if (puzzleString.length != 81) {
-      return false;
-    } else {
-      const regex = /^[1-9.]+$/;
-      if (regex.test(puzzleString)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  checkRowPlacement(puzzleString, row, column, value) {
-    // Check if data is correct
-    if (checkCorrect(row, column, value)) {
-      // Get substring for row
-      let substring;
+// Get whole row
+function getRow(puzzleString, row) {
+  let substring;
       switch(row) {
         case 'A': 
           substring = puzzleString.substring(0,9)
@@ -81,8 +62,57 @@ class SudokuSolver {
           break;
       };
 
+      return substring;
+}
+
+// Get whole column
+function getColumn(puzzleString, column) {
+  let result = '';
+  for(let i = column - 1; i <= puzzleString.length - 1; i += 9) {
+    result += puzzleString[i];
+  }
+  return result;
+}
+
+// Change row to number
+function rowToNumber(row) {
+  switch(row) {
+    case 'A': return 0;
+    case 'B': return 1;
+    case 'C': return 2;
+    case 'D': return 3;
+    case 'E': return 4;
+    case 'F': return 5;
+    case 'G': return 6;
+    case 'H': return 7;
+    case 'I': return 8;
+  }
+}
+
+
+
+class SudokuSolver {
+
+  validate(puzzleString) {
+    if (puzzleString.length != 81) {
+      return false;
+    } else {
+      const regex = /^[1-9.]+$/;
+      if (regex.test(puzzleString)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  checkRowPlacement(puzzleString, row, column, value) {
+    // Check if data is correct
+    if (checkCorrect(row, column, value)) {
+      // Get substring for row
+      const substring = getRow(puzzleString, row);
       // Check if possible to place
-      if (substring[column] != "." || substring.includes(value)) {
+      if (substring[column - 1] != "." || substring.includes(value)) {
         return false;
       } else {
         return true;
@@ -95,8 +125,20 @@ class SudokuSolver {
   checkColPlacement(puzzleString, row, column, value) {
     // Check if data is correct
     if (checkCorrect(row, column, value)) {
-      // TODO
-      return true;
+      // Get substring for column
+      const substring = getColumn(puzzleString, column);
+      
+      // Change row to number
+      const rowNumber = rowToNumber(row);
+
+      // Check if possible to place
+      if (substring[rowNumber] != "." || substring.includes(value)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else{
+      return false;
     }
   }
 
