@@ -37,5 +37,10 @@ suite('Unit Tests', () => {
             assert.equal(solver.checkColPlacement(validSudoku, 'I', 9, 9 ), false);
 
         });
+        test('Logic handles a valid region (3x3 grid) placement', function() {
+            assert.equal(solver.checkRegionPlacement(validSudoku, 'A', 1, 7), true);
+            assert.equal(solver.checkRegionPlacement(validSudoku, 'E', 9, 7), true);
+            
+        });
     })
 });
