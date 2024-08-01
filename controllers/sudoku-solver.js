@@ -72,7 +72,89 @@ function getColumn(puzzleString, column) {
     result += puzzleString[i];
   }
   return result;
+};
+
+// Get regionRow
+function getRegionRow(row) {
+  const ABC = "ABC";
+  const DEF = "DEF";
+  const GHI = "GHI";
+
+  let regionRow;
+
+  // Calculate regionRow
+  if (ABC.includes(row)) {
+    regionRow = 1;
+  } else if (DEF.includes(row)) {
+    regionRow = 2;
+  } else if (GHI.includes(row)) {
+    regionRow = 3;
+  };
+
+  return regionRow
 }
+
+// Get regionColumn
+function getRegionColumn(column) {
+  const oneToThree = 123;
+  const fourToSix = 456;
+  const sevenToNine = 789;
+
+  let regionColumn;
+
+  // Calculate regionColumn
+  if (oneToThree.includes(column)) {
+    regionColumn = 1;
+  } else if (fourToSix.includes(column)) {
+    regionColumn = 2;
+  } else if (sevenToNine.includes(column)) {
+    regionColumn = 3;
+  };
+
+  return regionColumn;
+}
+
+// Get region
+function getRegion(puzzleString, row, column) {
+  const regionRow = getRegionRow(row);
+
+  const regionColumn = getRegionColumn(column);
+
+  let s1 = 0;
+  let s2 = 9;
+  let s3 = 18;
+
+  if (regionColumn == 2) {
+    s1 += 3;
+    s2 += 3;
+    s3 += 3;
+  } else if (regionColumn == 3) {
+    s1 += 6;
+    s2 += 6;
+    s3 += 6;
+  }
+
+  if (regionRow == 2) {
+    s1 += 27;
+    s2 += 27;
+    s3 += 27;
+  } else if (regionRow == 3) {
+    s1 += 54;
+    s2 += 54;
+    s3 += 54;
+  };
+ 
+  
+  const sub1 = puzzleString.substring(s1, s1 + 3);
+  const sub2 = puzzleString.substring(s2, s2 + 3);
+  const sub3 = puzzleString.substring(s3, s3 + 3);
+
+  const substring = sub1 + sub2 + sub3;
+
+  return substring;
+
+};
+
 
 // Change row to number
 function rowToNumber(row) {
@@ -145,7 +227,6 @@ class SudokuSolver {
   checkRegionPlacement(puzzleString, row, column, value) {
     // Check if data is correct
     if (checkCorrect(row, column, value)) {
-      // TODO
       return true;
     }
   }
