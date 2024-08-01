@@ -227,7 +227,13 @@ class SudokuSolver {
   checkRegionPlacement(puzzleString, row, column, value) {
     // Check if data is correct
     if (checkCorrect(row, column, value)) {
-      return true;
+      const substring = getRegion(puzzleString, row, column);
+
+      if (substring.includes(value)) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 
