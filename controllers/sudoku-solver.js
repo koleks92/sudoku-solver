@@ -96,9 +96,9 @@ function getRegionRow(row) {
 
 // Get regionColumn
 function getRegionColumn(column) {
-  const oneToThree = 123;
-  const fourToSix = 456;
-  const sevenToNine = 789;
+  const oneToThree = '123';
+  const fourToSix = '456';
+  const sevenToNine = '789';
 
   let regionColumn;
 
