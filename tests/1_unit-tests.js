@@ -2,9 +2,12 @@ const chai = require('chai');
 const assert = chai.assert;
 
 const SudokuSolver = require('../controllers/sudoku-solver.js');
+const { puzzlesAndSolutions } = require('../controllers/puzzle-strings.js');
 let solver = new SudokuSolver;
 
-const validSudoku = '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..'
+const validSudoku = '..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
+const invalidSudoku = '...9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
+const invalidSudoku2 = 'ad9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..';
 
 suite('Unit Tests', () => {
     suite('Functions to check sudoku-solver.js', function() {
@@ -46,6 +49,22 @@ suite('Unit Tests', () => {
             assert.equal(solver.checkRegionPlacement(validSudoku, 'A', 1, 9), false);
             assert.equal(solver.checkRegionPlacement(validSudoku, 'E', 9, 8), false);
             
+        });
+        test('Valid puzzle strings pass the solver', function() {
+            assert.equal(typeof solver.solve(puzzlesAndSolutions[0][0]), 'string')
+            assert.equal(typeof solver.solve(puzzlesAndSolutions[1][0]), 'string')
+            assert.equal(typeof solver.solve(puzzlesAndSolutions[2][0]), 'string')
+            assert.equal(typeof solver.solve(puzzlesAndSolutions[3][0]), 'string')
+        })
+        test('Invalid puzzle strings fail the solver', function() {
+            assert.equal(solver.solve(invalidSudoku), false);
+            assert.equal(solver.solve(invalidSudoku2), false);
+        });
+        test('Solver returns the expected solution for an incomplete puzzle', function() {
+            assert.equal(solver.solve(puzzlesAndSolutions[0][0]), puzzlesAndSolutions[0][1])
+            assert.equal(solver.solve(puzzlesAndSolutions[1][0]), puzzlesAndSolutions[1][1])
+            assert.equal(solver.solve(puzzlesAndSolutions[2][0]), puzzlesAndSolutions[2][1])
+            assert.equal(solver.solve(puzzlesAndSolutions[3][0]), puzzlesAndSolutions[3][1])
         });
     })
 });
