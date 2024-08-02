@@ -24,7 +24,6 @@ function checkCorrect(row, column, value) {
   if (columnValueCheck(column) && rowCheck(row) && columnValueCheck(value)){
     return true;
   } else {
-    console.log("check")
     return false;
   }
 }
@@ -120,6 +119,7 @@ function getRegion(puzzleString, row, column) {
 
   const regionColumn = getRegionColumn(column);
 
+  // For regionColumn == 1 and regionRow == 1
   let s1 = 0;
   let s2 = 9;
   let s3 = 18;
@@ -169,6 +169,43 @@ function rowToNumber(row) {
     case 'H': return 7;
     case 'I': return 8;
   }
+}
+
+// Get row and column
+function getRowAndColumn(number) {
+  
+  let row;
+
+  const rowNumber = Math.floor(number / 9);
+  switch (rowNumber) {
+    case 0: row = 'A'
+    break;
+    case 1: row = 'B'
+    break;
+    case 2: row = 'C'
+    break;
+    case 3: row = 'D'
+    break;
+    case 4: row = 'E'
+    break;
+    case 5: row = 'F'
+    break;
+    case 6: row = 'G'
+    break;
+    case 7: row = 'H'
+    break;
+    case 8: row = 'I'
+    break;
+  };
+
+  const column = number + 1 - (rowNumber * 9);
+
+  const result = {
+    column: column,
+    row: row
+  };
+
+  return result;
 }
 
 
@@ -238,7 +275,33 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
-    
+    if (this.validate(puzzleString)) {
+      let puzzleArray = puzzleString.split('');
+
+
+      while (puzzleArray.includes('.')) {
+        for (let i = 0; i < puzzleArray.length; i++) {
+          if (puzzleArray[i] == '.') {
+            let values = '';
+            for (let j = 1; j < 10; j++) {
+              const {column, row} = getRowAndColumn(i);
+              if (this.checkRowPlacement(puzzleArray.join(''), row, column, j) &&
+                  this.checkColPlacement(puzzleArray.join(''), row, column, j) &&
+                  this.checkRegionPlacement(puzzleArray.join(''), row, column, j)) {
+                    values += j                  
+                  }
+            }
+            if (values.length == 1) {
+              puzzleArray[i] = values;
+            }
+          }
+        }
+      }
+      
+      return puzzleArray.join('');
+    } else {
+      return false;
+    }
   }
 }
 
