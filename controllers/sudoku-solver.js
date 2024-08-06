@@ -280,6 +280,7 @@ class SudokuSolver {
 
 
       while (puzzleArray.includes('.')) {
+        let solvable = false;
         for (let i = 0; i < puzzleArray.length; i++) {
           if (puzzleArray[i] == '.') {
             let values = '';
@@ -293,9 +294,14 @@ class SudokuSolver {
             }
             if (values.length == 1) {
               puzzleArray[i] = values;
+              solvable = true;
             }
           }
         }
+        if (!solvable) {
+          return false;
+        }
+
       }
       
       return puzzleArray.join('');
