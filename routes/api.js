@@ -6,63 +6,77 @@ module.exports = function (app) {
   
   let solver = new SudokuSolver();
 
-  app.route('/api/check')
-    .post((req, res) => {
+  app.post('/api/check', (req, res) => {
+    const puzzle = req.body.puzzle;
+    const coordinate = req.body.coordinate;
+    const value = req.body.value;
+    
+    const coordinateRegex = /^[A-I][1-9]$/;
+    const valuesCorrect = '123456789';
+  
+    // Check if all required fields are present
+    if (!puzzle || !coordinate || !value) {
+      return res.json({ error: 'Required field(s) missing' });
+    }
+  
+    // Check if the coordinate is valid
+    if (!coordinateRegex.test(coordinate)) {
+      return res.json({ error: 'Invalid coordinate' });
+    }
+  
+    // Check if the value is valid
+    if (!valuesCorrect.includes(value)) {
+      return res.json({ error: 'Invalid value' });
+    }
+    
+    // Check puzzle length
+    if (puzzle.length !== 81) {
+      return res.json({ error: 'Expected puzzle to be 81 characters long' });
+    }
 
-      // const puzzle = req.body.puzzle;
-      // const coordinate = req.body.puzzle;
-      // const value = req.body.value;
+    // Validate the puzzle
+    if (!solver.validate(puzzle)) {
+      return res.json({ error: 'Invalid characters in puzzle' });
+    }
 
-      // const coordinateRegex = '^[A-I][1-9]$';
-      // const valuesCorrect = '123456789';
+    // Convert coordinate to row and column
+    const row = coordinate[0];
+    const column = parseInt(coordinate[1]);
 
-      // if (!coordinateRegex.test(coordinate)) {
-      //   res.json({ error: 'Invalid coordinate' })
-      // };
+    // Not sure why it works, but it does ,)
+    // Check if the value is already placed at the coordinate
+    const index = (row.charCodeAt(0) - 65) * 9 + (column - 1);
+    if (puzzle[index] == value) {
+      return res.json({ valid: true });
+    }
 
-      // if (!valuesCorrect.includes(value)) {
-      //   res.json({ error: 'Invalid value' })
-      // };
- 
-      // if (!solver.validate(puzzle)) {
-      //   res.json({ error: 'Invalid characters in puzzle' })
-      // };
+    // Check the placements
+    const columnCheck = solver.checkColPlacement(puzzle, row, column, value);
+    const rowCheck = solver.checkRowPlacement(puzzle, row, column, value);
+    const regionCheck = solver.checkRegionPlacement(puzzle, row, column, value);
 
-      // if (puzzle.length !== 81) {
-      //   res.json({ error: 'Expected puzzle to be 81 characters long' });
-      // };
-
-      // if (!puzzle || !coordinate || !value) {
-      //   res.json({ error: 'Required field(s) missing' })
-      // }
-
-      // const columnCheck = solver.checkColPlacement(puzzle, coordinate[0], coordinate[1], value);
-      // const rowCheck = solver.checkRowPlacement(puzzle, coordinate[0], coordinate[1], value);
-      // const regionCheck = solver.checkRegionPlacement(puzzle, coordinate[0], coordinate[1], value);
-
-      // if (columnCheck && rowCheck && regionCheck) {
-      //   res.json({ valid: true });
-      // } else {
-      //   let conflict = [];
-      //   if (!columnCheck) {
-      //     conflict.push("column");
-      //   }
-      //   if (!rowCheck) {
-      //     conflict.push("row");
-      //   }
-      //   if (!regionCheck) {
-      //     conflict.push("region");
-      //   }
-
-      //   console.log(conflict);
-
-      //   res.json({ 
-      //     valid: false,
-      //     conflict
-      //    })
-      // }
-
-    });
+  
+    // Determine the response
+    if (columnCheck && rowCheck && regionCheck) {
+      return res.json({ valid: true });
+    } else {
+      let conflict = [];
+      if (!columnCheck) {
+        conflict.push("column");
+      }
+      if (!rowCheck) {
+        conflict.push("row");
+      }
+      if (!regionCheck) {
+        conflict.push("region");
+      }
+      
+      return res.json({ 
+        valid: false,
+        conflict
+      });
+    }
+  });
     
   app.route('/api/solve')
     .post((req, res) => {
@@ -81,7 +95,6 @@ module.exports = function (app) {
         res.json({ error: 'Invalid characters in puzzle' });
       };
 
-      // TODO
       const solution = solver.solve(puzzle);
       if (!solution) {
         res.json({ error: 'Puzzle cannot be solved' })
